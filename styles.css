@@ -84,7 +84,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-h) + 12px);
+  scroll-padding-top: var(--header-h);
 }
 
 body {
@@ -651,12 +651,6 @@ ol {
 
 /* ---------- Buscador ---------- */
 
-.finder {
-  position: relative;
-  z-index: 5;
-  margin-top: -60px;
-}
-
 .finder__card {
   padding: clamp(20px, 3vw, 34px);
   background: var(--surface);
@@ -674,7 +668,7 @@ ol {
   margin-bottom: 22px;
 }
 
-.finder__head h2 {
+.finder__head h3 {
   font-size: clamp(1.3rem, 2.2vw, 1.65rem);
 }
 
@@ -866,7 +860,7 @@ select {
 /* ---------- Secciones ---------- */
 
 .section {
-  padding-block: clamp(24px, 3vw, 40px);
+  padding-block: clamp(20px, 2vw, 28px);
 }
 
 .section--alt {
@@ -880,7 +874,7 @@ select {
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: clamp(14px, 1.5vw, 22px);
+  margin-bottom: clamp(10px, 1vw, 14px);
 }
 
 .section__head h2 {
@@ -891,6 +885,17 @@ select {
   max-width: 62ch;
   margin-top: 8px;
   color: var(--muted);
+}
+
+/* Los filtros del reel van en la misma fila que el título y bajan solos si no caben. */
+.section__head > div:first-child:not(:only-child) {
+  flex: 1 1 320px;
+}
+
+.section__head .chips,
+.section__head .tabs {
+  margin-bottom: 0;
+  max-width: 100%;
 }
 
 .section__head--center {
@@ -1504,6 +1509,51 @@ select {
 .step p {
   color: var(--muted);
   font-size: 0.88rem;
+}
+
+/* ---------- Tu Casa: proceso + buscador en una pantalla ---------- */
+
+.tu-casa .step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: start;
+  align-items: center;
+  column-gap: 12px;
+  padding: 16px 18px;
+}
+
+.tu-casa .step__num {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0;
+}
+
+.tu-casa .step h3 {
+  margin-bottom: 0;
+}
+
+.tu-casa .step p {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+/* Tras una búsqueda con resultados el buscador sube y los pasos se ocultan. */
+.tu-casa--resultados .section__head,
+.tu-casa--resultados .steps {
+  display: none;
+}
+
+.tu-casa .finder__card {
+  margin-top: clamp(14px, 1.6vw, 20px);
+  padding: clamp(18px, 2vw, 24px);
+}
+
+.tu-casa .finder__head {
+  margin-bottom: 14px;
+}
+
+.tu-casa--resultados .finder__card {
+  margin-top: 0;
 }
 
 /* ---------- Contacto ---------- */
@@ -2162,6 +2212,16 @@ dialog::backdrop {
 }
 
 @media (max-width: 640px) {
+  /* En celular la sección queda solo con el buscador; el proceso es para escritorio. */
+  .tu-casa .section__head,
+  .tu-casa .steps {
+    display: none;
+  }
+
+  .tu-casa .finder__card {
+    margin-top: 0;
+  }
+
   :root {
     --header-h: 66px;
   }
@@ -2206,10 +2266,6 @@ dialog::backdrop {
   .hero__controls {
     width: 100%;
     justify-content: space-between;
-  }
-
-  .finder {
-    margin-top: -44px;
   }
 
   .finder__head {
@@ -2279,49 +2335,63 @@ dialog::backdrop {
   }
 }
 
-/* ---------- Fichas compactas en desktop ---------- */
+/* ---------- Fichas compactas ---------- */
 
 /* Recorte vertical de las fichas de los reels para que cada sección quepa
-   en una pantalla de 1440×900. En móvil se conserva el tamaño actual. */
+   bajo el menú en una laptop de 1366×768; en celular la ficha queda entera
+   con poco scroll. */
+.carousel--dev .dev-card__media {
+  aspect-ratio: 16 / 9;
+}
+
+.model-card__media {
+  aspect-ratio: 16 / 10;
+}
+
+.dev-card__body {
+  gap: 8px;
+  padding: 14px 16px 16px;
+}
+
+.dev-card__desc {
+  -webkit-line-clamp: 2;
+}
+
+.tags {
+  gap: 4px;
+}
+
+.tag {
+  padding: 3px 8px;
+  font-size: 0.68rem;
+}
+
+.dev-card__footer {
+  padding-top: 10px;
+}
+
+.model-card__body {
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
 @media (min-width: 901px) {
   .carousel--dev .dev-card {
     flex-basis: 280px;
   }
 
-  /* 16/10 en vez de 4/3 recorta un poco la foto y baja la ficha ~34 px. */
-  .carousel--dev .dev-card__media {
-    aspect-ratio: 16 / 10;
-  }
-
   .dev-card__body {
-    gap: 8px;
-    padding: 14px 16px 16px;
+    gap: 6px;
+    padding-bottom: 12px;
   }
 
-  .dev-card__desc {
-    -webkit-line-clamp: 2;
-  }
-
-  .tags {
-    gap: 4px;
-  }
-
-  .tag {
-    padding: 3px 8px;
-    font-size: 0.68rem;
-  }
-
-  .dev-card__footer {
-    padding-top: 10px;
+  /* Con mouse no hace falta el alto táctil de 44 px. */
+  .dev-card__footer .link-arrow {
+    min-height: 36px;
   }
 
   .model-card {
     flex-basis: 300px;
-  }
-
-  .model-card__body {
-    gap: 10px;
-    padding: 14px 16px 16px;
   }
 
   .carousel__status {
